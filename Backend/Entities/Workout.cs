@@ -12,5 +12,5 @@ public class Workout
     public int? ExercisePlanId { get; set; }           // опционално
     public ExercisePlan? ExercisePlan { get; set; }
 
-    public ICollection<WorkoutExercise> Exercises { get; set; } = new();
+    public ICollection<WorkoutExercise> Exercises { get; set; } = new List<WorkoutExercise>();
 }

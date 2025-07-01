@@ -10,5 +10,5 @@ public class ExercisePlan
     public string UserId { get; set; } = null!;
     public User User { get; set; } = null!;
 
-    public ICollection<ExercisePlanItem> Items { get; set; } = new();
+    public ICollection<ExercisePlanItem> Items { get; set; } = new List<ExercisePlanItem>();
 }

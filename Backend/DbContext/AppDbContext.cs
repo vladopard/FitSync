@@ -12,7 +12,8 @@ namespace FitSync.DbContext
         {
             base.OnModelCreating(builder);
 
-            // Учитати све Fluent API конфигурације
+
+
             builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         }
 

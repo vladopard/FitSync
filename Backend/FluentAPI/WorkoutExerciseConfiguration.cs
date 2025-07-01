@@ -8,7 +8,12 @@ public class WorkoutExerciseConfiguration : IEntityTypeConfiguration<WorkoutExer
 {
     public void Configure(EntityTypeBuilder<WorkoutExercise> builder)
     {
-        builder.ToTable("WorkoutExercises");
+        builder.ToTable("WorkoutExercises", tb => tb
+            .HasCheckConstraint(
+                "CK_WorkoutExercises_PositiveValues",
+                "\"Sets\" > 0 AND \"Reps\" > 0 AND \"Weight\" > 0 AND \"RestSeconds\" > 0 AND \"OrderInWorkout\" > 0"
+            )
+          );
 
         builder.HasKey(we => we.Id);
 
@@ -39,5 +44,9 @@ public class WorkoutExerciseConfiguration : IEntityTypeConfiguration<WorkoutExer
             .WithMany(e => e.WorkoutExercises)
             .HasForeignKey(we => we.ExerciseId)
             .IsRequired();
+
+        builder.HasIndex(we => new { we.WorkoutId, we.OrderInWorkout })
+               .IsUnique()
+               .HasDatabaseName("UX_WorkoutExercises_Workout_Order");
     }
 }

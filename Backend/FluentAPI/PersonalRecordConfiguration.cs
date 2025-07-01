@@ -8,7 +8,12 @@ public class PersonalRecordConfiguration : IEntityTypeConfiguration<PersonalReco
 {
     public void Configure(EntityTypeBuilder<PersonalRecord> builder)
     {
-        builder.ToTable("PersonalRecords");
+        builder.ToTable("PersonalRecords", tb => tb
+            .HasCheckConstraint(
+               "CK_PersonalRecords_PositiveValuesAndDate",
+               "\"MaxWeight\" > 0 AND \"Reps\" > 0"
+            )
+          );
 
         builder.HasKey(pr => pr.Id);
 
@@ -24,5 +29,6 @@ public class PersonalRecordConfiguration : IEntityTypeConfiguration<PersonalReco
             .WithMany(e => e.PersonalRecords)
             .HasForeignKey(pr => pr.ExerciseId);
 
+        
     }
 }

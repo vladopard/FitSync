@@ -3,7 +3,7 @@ using FitSync.DbContext;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace FitSync.Infrastructure;
+namespace FitSync.DbContext;
 
 public static class DbSeeder
 {

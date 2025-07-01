@@ -8,8 +8,6 @@ public class WorkoutConfiguration : IEntityTypeConfiguration<Workout>
 {
     public void Configure(EntityTypeBuilder<Workout> builder)
     {
-        builder.ToTable("Workouts");
-
         builder.HasKey(w => w.Id);
 
         builder.Property(w => w.Date)
@@ -28,5 +26,9 @@ public class WorkoutConfiguration : IEntityTypeConfiguration<Workout>
         builder.HasMany(w => w.Exercises)
             .WithOne(we => we.Workout)
             .HasForeignKey(we => we.WorkoutId);
+
+        builder.HasIndex(w => new { w.UserId, w.Date })
+               .IsUnique()
+               .HasDatabaseName("IX_Workouts_UserId_Date_Unique");
     }
 }

@@ -19,6 +19,9 @@ public class ExercisePlanConfiguration : IEntityTypeConfiguration<ExercisePlan>
         builder.Property(p => p.Description)
             .HasMaxLength(500);
 
+        builder.HasIndex(p => new { p.UserId, p.Name })
+            .IsUnique();
+
         builder.HasOne(p => p.User)
             .WithMany(u => u.ExercisePlans)
             .HasForeignKey(p => p.UserId)
@@ -27,5 +30,8 @@ public class ExercisePlanConfiguration : IEntityTypeConfiguration<ExercisePlan>
         builder.HasMany(p => p.Items)
             .WithOne(i => i.Plan)
             .HasForeignKey(i => i.ExercisePlanId);
+
+        
+
     }
 }

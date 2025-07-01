@@ -13,7 +13,6 @@ namespace FitSync.DbContext
             base.OnModelCreating(builder);
 
 
-
             builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         }
 

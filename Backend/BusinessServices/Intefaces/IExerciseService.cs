@@ -1,0 +1,14 @@
+﻿using FitSync.DTOs;
+
+namespace FitSync.BusinessServices.Intefaces
+{
+    public interface IExerciseService
+    {
+        Task<IEnumerable<ExerciseDTO>> GetAllAsync();
+        Task<ExerciseDTO> GetByIdAsync(int id);
+        Task<ExerciseDTO> CreateAsync(ExerciseCreateDTO dto);
+        Task UpdateAsync(int id, ExerciseUpdateDTO dto);
+        Task PatchAsync(int id, ExercisePatchDTO dto);
+        Task DeleteAsync(int id);
+    }
+}

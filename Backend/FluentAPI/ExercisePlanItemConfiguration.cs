@@ -8,7 +8,12 @@ public class ExercisePlanItemConfiguration : IEntityTypeConfiguration<ExercisePl
 {
     public void Configure(EntityTypeBuilder<ExercisePlanItem> builder)
     {
-        builder.ToTable("ExercisePlanItems");
+        builder.ToTable("ExercisePlanItems", tb => tb
+            .HasCheckConstraint(
+                "CK_ExercisePlanItems_PositiveValues",
+                "\"Order\" > 0 AND \"Sets\" > 0 AND \"Reps\" > 0"
+            )
+        );
 
         builder.HasKey(i => i.Id);
 
@@ -33,5 +38,13 @@ public class ExercisePlanItemConfiguration : IEntityTypeConfiguration<ExercisePl
             .WithMany(e => e.PlanItems)
             .HasForeignKey(i => i.ExerciseId)
             .IsRequired();
+
+        builder.HasIndex(i => new { i.ExercisePlanId, i.ExerciseId })
+               .IsUnique();
+
+        builder.HasIndex(i => new { i.ExercisePlanId, i.Order })
+               .IsUnique()
+               .HasDatabaseName("IX_ExercisePlanItems_Plan_Order_Unique");
+
     }
 }

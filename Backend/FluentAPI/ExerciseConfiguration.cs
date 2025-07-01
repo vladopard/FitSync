@@ -28,6 +28,9 @@ namespace FitSync.FluentAPI
                 .IsRequired()
                 .HasConversion<string>();
 
+            builder.HasIndex(e => new { e.Name, e.Type })
+                .IsUnique();
+
             builder.HasMany(e => e.PlanItems)
                 .WithOne(p => p.Exercise)
                 .HasForeignKey(p => p.ExerciseId);

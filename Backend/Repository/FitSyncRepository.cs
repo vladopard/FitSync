@@ -96,6 +96,39 @@ public class FitSyncRepository : IFitSyncRepository
     public void DeletePlanItem(ExercisePlanItem item)
         => _ctx.ExercisePlanItems.Remove(item);
 
+    // === PERSONAL RECORDS ===
+    public async Task<IEnumerable<PersonalRecord>> GetAllPersonalRecordsByUserAsync(string userId)
+        => await _ctx.PersonalRecords
+                     .Where(pr => pr.UserId == userId)
+                     .Include(pr => pr.Exercise)
+                     .AsNoTracking()
+                     .ToListAsync();
+
+    public async Task<PersonalRecord?> GetPersonalRecordByIdAsync(int id)
+        => await _ctx.PersonalRecords
+                     .Include(pr => pr.Exercise)
+                     .FirstOrDefaultAsync(pr => pr.Id == id);
+
+    public async Task AddPersonalRecordAsync(PersonalRecord record)
+    {
+        await _ctx.PersonalRecords.AddAsync(record);
+        await _ctx.SaveChangesAsync();
+
+        await _ctx.Entry(record)
+            .Reference(r => r.Exercise)
+            .LoadAsync();
+
+        await _ctx.Entry(record)
+            .Reference(r => r.User)
+            .LoadAsync(); 
+    }
+
+    public void UpdatePersonalRecord(PersonalRecord record)
+        => _ctx.PersonalRecords.Update(record);
+
+    public void DeletePersonalRecord(PersonalRecord record)
+        => _ctx.PersonalRecords.Remove(record);
+
     //HELPERS
     public async Task<bool> SaveChangesAsync()
         => await _ctx.SaveChangesAsync() > 0;

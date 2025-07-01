@@ -25,6 +25,7 @@ builder.Services.AddScoped<IFitSyncRepository, FitSyncRepository>();
 builder.Services.AddScoped<IExerciseService, ExerciseService>();
 builder.Services.AddScoped<IExercisePlanService, ExercisePlanService>();
 builder.Services.AddScoped<IExercisePlanItemService, ExercisePlanItemService>();
+builder.Services.AddScoped<IPersonalRecordService, PersonalRecordService>();
 
 builder.Services.AddAutoMapper(
     AppDomain.CurrentDomain.GetAssemblies());

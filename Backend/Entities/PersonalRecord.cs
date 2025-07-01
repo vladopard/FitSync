@@ -16,5 +16,10 @@ public class PersonalRecord
     public double MaxWeight { get; set; }  // нпр. 120.0
     public int Reps { get; set; }          // нпр. 1 → 1RM
 
-    public DateTime AchievedAt { get; set; }
+    private DateTime _achievedAt;
+    public DateTime AchievedAt
+    {
+        get => _achievedAt;
+        set => _achievedAt = DateTime.SpecifyKind(value, DateTimeKind.Utc);
+    }
 }

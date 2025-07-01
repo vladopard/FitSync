@@ -76,6 +76,8 @@ namespace FitSync.Migrations
                 name: "CK_ExercisePlanItems_PositiveValues",
                 table: "ExercisePlanItems",
                 sql: "\"Order\" > 0 AND \"Sets\" > 0 AND \"Reps\" > 0");
+
+
         }
 
         /// <inheritdoc />

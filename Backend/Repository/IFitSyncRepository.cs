@@ -22,7 +22,12 @@ public interface IFitSyncRepository
     Task AddPlanItemAsync(ExercisePlanItem item);
     void UpdatePlanItem(ExercisePlanItem item);
     void DeletePlanItem(ExercisePlanItem item);
-
+    // PERSONAL RECORD
+    Task<IEnumerable<PersonalRecord>> GetAllPersonalRecordsByUserAsync(string userId);
+    Task<PersonalRecord?> GetPersonalRecordByIdAsync(int id);
+    Task AddPersonalRecordAsync(PersonalRecord record);
+    void UpdatePersonalRecord(PersonalRecord record);
+    void DeletePersonalRecord(PersonalRecord record);
 
     //HELPERS
     Task<bool> SaveChangesAsync();

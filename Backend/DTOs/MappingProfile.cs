@@ -55,6 +55,15 @@ namespace FitSync.DTOs
             CreateMap<ExercisePlanItemPatchDTO, ExercisePlanItem>()
                 .ForAllMembers(opts =>
                     opts.Condition((src, dest, srcMember) => srcMember != null));
+            // ======================
+            // PERSONAL RECORD
+            // ======================
+            CreateMap<PersonalRecord, PersonalRecordDTO>()
+            .ForMember(dest => dest.ExerciseName, opt => opt.MapFrom(src => src.Exercise.Name));
+
+            // Mapiranja за Create и Update DTO → PersonalRecord
+            CreateMap<PersonalRecordCreateDTO, PersonalRecord>();
+            CreateMap<PersonalRecordUpdateDTO, PersonalRecord>();
 
         }
     }

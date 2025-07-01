@@ -29,6 +29,9 @@ public class PersonalRecordConfiguration : IEntityTypeConfiguration<PersonalReco
             .WithMany(e => e.PersonalRecords)
             .HasForeignKey(pr => pr.ExerciseId);
 
-        
+        builder.HasIndex(pr => new { pr.ExerciseId, pr.UserId })
+            .IsUnique()
+            .HasDatabaseName("UX_PersonalRecord_Exercise_User");
+
     }
 }

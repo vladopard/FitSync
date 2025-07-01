@@ -23,6 +23,8 @@ builder.Services.AddIdentity<User, IdentityRole>()
 
 builder.Services.AddScoped<IFitSyncRepository, FitSyncRepository>();
 builder.Services.AddScoped<IExerciseService, ExerciseService>();
+builder.Services.AddScoped<IExercisePlanService, ExercisePlanService>();
+builder.Services.AddScoped<IExercisePlanItemService, ExercisePlanItemService>();
 
 builder.Services.AddAutoMapper(
     AppDomain.CurrentDomain.GetAssemblies());

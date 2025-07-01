@@ -1,53 +1,85 @@
 ﻿using System.Net;
-using System.Text.Json;//morao rucno da importujem
+using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-namespace FitSync.Helpers;
-public class ExceptionHandlingMiddleware
+namespace FitSync.Helpers
 {
-
-    private readonly RequestDelegate _next;
-    //RD NEXT - "ово је функција која представља све што долази после тебе".
-    public ExceptionHandlingMiddleware(RequestDelegate next)
+    public class ExceptionHandlingMiddleware
     {
-        //Прима следећи RequestDelegate у конструктору и чува га као _next.
-        //„Позови следећи middleware у реду, и врати ми Task који се завршава кад он заврши.”
-        _next = next;
+        private readonly RequestDelegate _next;
+
+        public ExceptionHandlingMiddleware(RequestDelegate next)
+        {
+            _next = next;
+        }
+
+        public async Task InvokeAsync(HttpContext http)
+        {
+            try
+            {
+                await _next(http);
+            }
+            catch (DbUpdateException dbEx) when (dbEx.InnerException?.Message.Contains("duplicate") == true)
+            {
+                var problem = new ProblemDetails
+                {
+                    Type = "https://httpstatuses.com/409",
+                    Title = "Conflict",
+                    Status = StatusCodes.Status409Conflict,
+                    Detail = "Duplicate plan name for this user. Please choose a different name.",
+                    Instance = http.Request.Path
+                };
+                await WriteProblemAsync(http, problem);
+            }
+            catch (KeyNotFoundException knf)
+            {
+                var problem = new ProblemDetails
+                {
+                    Type = "https://httpstatuses.com/404",
+                    Title = "Not Found",
+                    Status = StatusCodes.Status404NotFound,
+                    Detail = knf.Message,
+                    Instance = http.Request.Path
+                };
+                await WriteProblemAsync(http, problem);
+            }
+            catch (InvalidOperationException ioe)
+            {
+                var problem = new ProblemDetails
+                {
+                    Type = "https://httpstatuses.com/409",
+                    Title = "Conflict",
+                    Status = StatusCodes.Status409Conflict,
+                    Detail = ioe.Message,
+                    Instance = http.Request.Path
+                };
+                await WriteProblemAsync(http, problem);
+            }
+            catch (Exception)
+            {
+                var problem = new ProblemDetails
+                {
+                    Type = "https://httpstatuses.com/500",
+                    Title = "Internal Server Error",
+                    Status = StatusCodes.Status500InternalServerError,
+                    Detail = "An unexpected error occurred. Please try again later.",
+                    Instance = http.Request.Path
+                };
+                await WriteProblemAsync(http, problem);
+            }
+        }
+
+        private static async Task WriteProblemAsync(HttpContext http, ProblemDetails problem)
+        {
+            http.Response.StatusCode = problem.Status!.Value;
+            http.Response.ContentType = "application/problem+json";
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            var json = JsonSerializer.Serialize(problem, options);
+            await http.Response.WriteAsync(json);
+        }
     }
-
-    //Ово је главна метода коју ASP.NET Core зове кад долази HTTP захтев.
-    //HttpContext садржи податке о захтеву и омогућава слање одговора.
-
-    public async Task InvokeAsync(HttpContext http)
-    {
-        try
-        {
-            await _next(http); // Пуштам захтев даље (контролер)
-        }
-        catch (KeyNotFoundException knf)
-        {
-            //Овде middleware "хвата" све што пуца у pipeline-у иза њега.
-            //То укључује:Грешке у контролеру,Грешке у сервису,Грешке у репозиторијуму,
-            //Буквално све иза await _next(...)
-
-            http.Response.StatusCode = (int)HttpStatusCode.NotFound;
-            http.Response.ContentType = "application/json";
-            var payload = new { message = knf.Message };
-            await http.Response.WriteAsync(JsonSerializer.Serialize(payload));
-        }
-        catch (InvalidOperationException ioe)
-        {
-            http.Response.StatusCode = (int)HttpStatusCode.Conflict;
-            http.Response.ContentType = "application/json";
-            var payload = new { message = ioe.Message };
-            await http.Response.WriteAsync(JsonSerializer.Serialize(payload));
-        }
-        catch (Exception)
-        {
-            http.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            http.Response.ContentType = "application/json";
-            var payload = new { message = "An unexpected error occurred." };
-            await http.Response.WriteAsync(JsonSerializer.Serialize(payload));
-        }
-    }
-
 }

@@ -19,6 +19,43 @@ namespace FitSync.DTOs
 
             CreateMap<ExercisePatchDTO, Exercise>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            // ======================
+            // EXERCISE PLAN
+            // ======================
+            CreateMap<ExercisePlan, ExercisePlanDTO>()
+                .ForMember(dest => dest.Items,
+                    opt => opt.MapFrom(src => src.Items));
+
+            CreateMap<ExercisePlanCreateDTO, ExercisePlan>();
+
+            CreateMap<ExercisePlanUpdateDTO, ExercisePlan>();
+
+            CreateMap<ExercisePlanDTO, ExercisePlanPatchDTO>();
+
+            CreateMap<ExercisePlanPatchDTO, ExercisePlan>()
+                .ForAllMembers(opts =>
+                    opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            // ======================
+            // EXERCISE PLAN ITEM
+            // ======================
+            CreateMap<ExercisePlanItem, ExercisePlanItemDTO>()
+                .ForMember(dest => dest.ExerciseName,
+               opt => opt.MapFrom(src => src.Exercise.Name))
+                .ForMember(dest => dest.PlanName,
+               opt => opt.MapFrom(src => src.Plan.Name));
+
+
+            CreateMap<ExercisePlanItemCreateDTO, ExercisePlanItem>();
+            CreateMap<ExercisePlanItemUpdateDTO, ExercisePlanItem>();
+
+            // allow mapping back from DTO to patch DTO if needed
+            CreateMap<ExercisePlanItemDTO, ExercisePlanItemPatchDTO>();
+
+            CreateMap<ExercisePlanItemPatchDTO, ExercisePlanItem>()
+                .ForAllMembers(opts =>
+                    opts.Condition((src, dest, srcMember) => srcMember != null));
+
         }
     }
 }

@@ -129,6 +129,77 @@ public class FitSyncRepository : IFitSyncRepository
     public void DeletePersonalRecord(PersonalRecord record)
         => _ctx.PersonalRecords.Remove(record);
 
+    // === WORKOUT ===
+    public async Task<IEnumerable<Workout>> GetAllWorkoutsAsync()
+        => await _ctx.Workouts
+                .Include(w => w.ExercisePlan)
+                .Include(w => w.Exercises)
+                    .ThenInclude(e => e.Exercise)
+                .AsNoTracking()
+                .ToListAsync();
+    public async Task<IEnumerable<Workout>> GetAllWorkoutsByUserAsync(string userId)
+        => await _ctx.Workouts
+                .Where(w => w.UserId == userId)
+                .Include(w => w.ExercisePlan)
+                .Include(w => w.Exercises)
+                    .ThenInclude(e => e.Exercise)
+                .AsNoTracking()
+                .ToListAsync();
+    public async Task<Workout?> GetWorkoutByIdAsync(int id)
+        => await _ctx.Workouts
+                     .Include(w => w.ExercisePlan)
+                     .Include(w => w.Exercises)
+                       .ThenInclude(e => e.Exercise)
+                     .FirstOrDefaultAsync(w => w.Id == id);
+
+    public async Task AddWorkoutAsync(Workout workout)
+    {
+        await _ctx.Workouts.AddAsync(workout);
+        await _ctx.SaveChangesAsync();
+
+        // immediately load the plan nav
+        await _ctx.Entry(workout)
+                  .Reference(w => w.ExercisePlan)
+                  .LoadAsync();
+    }
+
+    public void UpdateWorkout(Workout workout)
+        => _ctx.Workouts.Update(workout);
+
+    public void DeleteWorkout(Workout workout)
+        => _ctx.Workouts.Remove(workout);
+
+    // === WORKOUT EXERCISE ===
+
+    public async Task<IEnumerable<WorkoutExercise>> GetAllWorkoutExercisesByWorkoutIdAsync(int workoutId)
+        => await _ctx.WorkoutExercises
+                     .Where(we => we.WorkoutId == workoutId)
+                     .Include(we => we.Exercise)
+                     .AsNoTracking()
+                     .ToListAsync();
+
+    public async Task<WorkoutExercise?> GetWorkoutExerciseByIdAsync(int id)
+        => await _ctx.WorkoutExercises
+                     .Include(we => we.Exercise)
+                     .FirstOrDefaultAsync(we => we.Id == id);
+
+    public async Task AddWorkoutExerciseAsync(WorkoutExercise we)
+    {
+        await _ctx.WorkoutExercises.AddAsync(we);
+
+        await _ctx.SaveChangesAsync();
+
+        await _ctx.Entry(we)
+                  .Reference(x => x.Exercise)
+                  .LoadAsync();
+    }
+
+    public void UpdateWorkoutExercise(WorkoutExercise we)
+        => _ctx.WorkoutExercises.Update(we);
+
+    public void DeleteWorkoutExercise(WorkoutExercise we)
+        => _ctx.WorkoutExercises.Remove(we);
+
     //HELPERS
     public async Task<bool> SaveChangesAsync()
         => await _ctx.SaveChangesAsync() > 0;

@@ -28,6 +28,20 @@ public interface IFitSyncRepository
     Task AddPersonalRecordAsync(PersonalRecord record);
     void UpdatePersonalRecord(PersonalRecord record);
     void DeletePersonalRecord(PersonalRecord record);
+    // WORKOUT
+    Task<IEnumerable<Workout>> GetAllWorkoutsAsync();
+    Task<IEnumerable<Workout>> GetAllWorkoutsByUserAsync(string userId);
+    Task<Workout?> GetWorkoutByIdAsync(int id);
+    Task AddWorkoutAsync(Workout workout);
+    void UpdateWorkout(Workout workout);
+    void DeleteWorkout(Workout workout);
+    // WORKOUT EXERCISE
+    Task<IEnumerable<WorkoutExercise>> GetAllWorkoutExercisesByWorkoutIdAsync(int workoutId);
+    Task<WorkoutExercise?> GetWorkoutExerciseByIdAsync(int id);
+    Task AddWorkoutExerciseAsync(WorkoutExercise we);
+    void UpdateWorkoutExercise(WorkoutExercise we);
+    void DeleteWorkoutExercise(WorkoutExercise we);
+
 
     //HELPERS
     Task<bool> SaveChangesAsync();

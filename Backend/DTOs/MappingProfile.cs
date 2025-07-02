@@ -49,7 +49,6 @@ namespace FitSync.DTOs
             CreateMap<ExercisePlanItemCreateDTO, ExercisePlanItem>();
             CreateMap<ExercisePlanItemUpdateDTO, ExercisePlanItem>();
 
-            // allow mapping back from DTO to patch DTO if needed
             CreateMap<ExercisePlanItemDTO, ExercisePlanItemPatchDTO>();
 
             CreateMap<ExercisePlanItemPatchDTO, ExercisePlanItem>()
@@ -61,9 +60,54 @@ namespace FitSync.DTOs
             CreateMap<PersonalRecord, PersonalRecordDTO>()
             .ForMember(dest => dest.ExerciseName, opt => opt.MapFrom(src => src.Exercise.Name));
 
-            // Mapiranja за Create и Update DTO → PersonalRecord
             CreateMap<PersonalRecordCreateDTO, PersonalRecord>();
             CreateMap<PersonalRecordUpdateDTO, PersonalRecord>();
+
+            // ======================
+            // WORKOUT
+            // ======================
+            CreateMap<Workout, WorkoutDTO>()
+                .ForMember(dest => dest.PlanName,
+                    opt => opt.MapFrom(src => src.ExercisePlan != null ? src.ExercisePlan.Name : null))
+                .ForMember(dest => dest.Exercises,
+                    opt => opt.MapFrom(src => src.Exercises));
+
+            // ─── DTO → Entity (Create / Update) ────────────────────────────────────
+
+            CreateMap<WorkoutCreateDTO, Workout>()
+                // these fields are set in the service, not from client
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.UserId, opt => opt.Ignore())
+                // we don’t touch the navigation collections here
+                .ForMember(dest => dest.Exercises, opt => opt.Ignore())
+                .ForMember(dest => dest.ExercisePlan, opt => opt.Ignore());
+
+            CreateMap<WorkoutUpdateDTO, Workout>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.UserId, opt => opt.Ignore())
+                .ForMember(dest => dest.Exercises, opt => opt.Ignore())
+                .ForMember(dest => dest.ExercisePlan, opt => opt.Ignore());
+
+            // ─── DTO → Entity (Patch) NOT IMPLEMENTED ──────────────────────────────────────────────
+
+            // ======================
+            // WORKOUT EXERCISE
+            // ======================
+            CreateMap<WorkoutExercise, WorkoutExerciseDTO>()
+               .ForMember(dest => dest.ExerciseName,
+                          opt => opt.MapFrom(src => src.Exercise.Name));
+
+            // ─── DTO → Entity (Create / Update) ────────────────────────────────────
+
+            CreateMap<WorkoutExerciseCreateDTO, WorkoutExercise>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.Workout, opt => opt.Ignore())
+                .ForMember(dest => dest.Exercise, opt => opt.Ignore());
+
+            CreateMap<WorkoutExerciseUpdateDTO, WorkoutExercise>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.Workout, opt => opt.Ignore())
+                .ForMember(dest => dest.Exercise, opt => opt.Ignore());
 
         }
     }

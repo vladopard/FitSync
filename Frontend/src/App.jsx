@@ -1,22 +1,25 @@
 // src/App.jsx
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Layout from './components/Layout';
-import Home from './pages/Home';
-// import Plans from './pages/Plans';
-// import Workouts from './pages/Workouts';
+import Layout   from './components/Layout';
+import Home     from './pages/Home';
+import Login    from './pages/Login';
+import Register from './pages/Register';
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
-          {/*
-          Future routes:
-          <Route path="/plans" element={<Plans />} />
-          <Route path="/workouts" element={<Workouts />} />
-        */}
+        {/* Svi putevi idu kroz Layout (Navbar + Outlet) */}
+        <Route path="/" element={<Layout />}>
+          {/* index == "/" */}
+          <Route index element={<Home />} />
+
+          {/* javne stranice */}
+          <Route path="login"    element={<Login />} />
+          <Route path="register" element={<Register />} />
+
+          {/* ovde kasnije možeš dodati plans, workouts... */}
         </Route>
       </Routes>
     </BrowserRouter>

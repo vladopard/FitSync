@@ -1,3 +1,8 @@
-@import './styles/home.css';
 @import './styles/base.css';
+@import './styles/variables.css';
+@import './styles/layout.css';
 @import './styles/components/Navbar.css';
+
+/* page styles */
+@import './styles/home.css';
+@import './styles/pages/AuthForm.css'; 

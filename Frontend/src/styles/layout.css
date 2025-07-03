@@ -1,0 +1,24 @@
+/* Основни лејаут и помоћне класе */
+
+/* Централизовани контејнер */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Grid од две колоне (аутоматски пада на 1 col на уском екрану) */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Spacing helpers */
+.mt-1 { margin-top: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+
+/* Center helper */
+.text-center { text-align: center; }

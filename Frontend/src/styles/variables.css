@@ -1,0 +1,17 @@
+/* Дизајн токени – боје, фонтови, радијуси */
+:root {
+  /* Colors */
+  --color-primary: #1e90ff;
+  --color-primary-dark: #1475d5;
+  --color-bg: #f7f8fa;
+  --color-text: #333;
+  --color-muted: #555;
+
+  /* Border radius */
+  --radius: 8px;
+
+  /* Font sizes */
+  --fs-base: 16px;
+  --fs-sm: 0.9rem;
+  --fs-lg: 1.25rem;
+}

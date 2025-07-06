@@ -21,6 +21,7 @@ export function AuthProvider({ children }) {
       userName: data.userName,   
       expiresAt: data.expiresAt,
       roles: data.roles,
+      userId: data.userId
     };
 
     setUser(auth);
@@ -38,6 +39,7 @@ export function AuthProvider({ children }) {
       userName: data.userName,
       expiresAt: data.expiresAt,
       roles: data.roles,
+      userId: data.userId
     };
 
     setUser(auth);

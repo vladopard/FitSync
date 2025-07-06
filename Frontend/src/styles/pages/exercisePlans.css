@@ -1,0 +1,91 @@
+/* src/styles/pages/exercisePlans.css */
+.plans-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.plan-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.plan-card header {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: #f7f7f7;
+  cursor: pointer;
+}
+
+.plan-body {
+  padding: 0.75rem 1rem;
+}
+
+.plan-desc { margin: 0 0 0.5rem; color: #555; }
+
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 0.4rem; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+
+/* ===== Headings ===== */
+.plans-page h1 {
+  text-align: center;
+  font-size: 2.25rem;   /* осетно веће */
+  margin-bottom: 1.5rem;
+  color: #222;
+}
+
+.plans-page h2 {
+  font-size: 1.35rem;   /* мало веће */
+  margin: 0 0 0.5rem;
+}
+
+/* ===== Section header (за „My Plans“ + дугме) ===== */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-create-plan {
+  background: #2c7be5;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s ease-in-out;
+}
+.btn-create-plan:hover {
+  background: #266bd0;
+}
+
+/* ===== Card hover for бољи feedback ===== */
+.plan-card header:hover {
+  background: #efefef;
+}
+
+/* ===== Табела – благо истицање заглавља ===== */
+.plan-body table thead tr {
+  background: #fafafa;
+  font-weight: 600;
+}
+
+.btn-add-items {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  background: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+.btn-add-items:hover {
+  background: #218838;
+}

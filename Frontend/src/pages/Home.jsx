@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import '../styles/home.css';
 
 export default function Home() {
   return (
@@ -22,6 +24,13 @@ export default function Home() {
         <div className="feature-card">
           <h2>Review Records</h2>
           <p>See personal bests and how far you’ve come.</p>
+        </div>
+        <div className="feature-card">
+          <h2>View Plans</h2>
+          <p>Browse and manage your existing exercise plans.</p>
+          <Link to="/plans" className="feature-link">
+            Go to Plans →
+          </Link>
         </div>
       </section>
     </div>

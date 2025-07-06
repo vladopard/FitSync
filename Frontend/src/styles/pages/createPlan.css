@@ -1,0 +1,53 @@
+.create-plan-page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.create-plan-page h1 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.create-plan-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.create-plan-form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  gap: 0.25rem;
+}
+
+.create-plan-form input,
+.create-plan-form textarea {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.create-plan-form button {
+  align-self: flex-end;
+  background: #2c7be5;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+.create-plan-form button:hover:not(:disabled) {
+  background: #266bd0;
+}
+
+.error {
+  color: #c33;
+  font-size: 0.9rem;
+}

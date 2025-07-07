@@ -27,7 +27,19 @@ const api = axios.create({
 export default api;
 
 export const getAllPlans = () => api.get('/exerciseplans');
-export const updatePlanItemOrders = (items) =>
-  api.put('/exerciseplanitems/reorder', items);
+export const deletePlan = (planId) => axios.delete(`/api/exerciseplans/${planId}`);
 
-export const deletePlan   = (planId) => axios.delete(`/api/exerciseplans/${planId}`);
+export const updatePlanItemOrders = (items) =>
+    api.put('/exerciseplanitems/reorder', items);
+export const deletePlanItem = itemId => api.delete(`/exerciseplanitems/${itemId}`);
+
+export const getWorkouts        = () => api.get('/workouts');
+export const createWorkout      = payload => api.post('/workouts', payload);   // { date, exercisePlanId? }
+export const getWorkout         = id => api.get(`/workouts/${id}`);
+export const updateWorkout      = (id, payload) => api.put(`/workouts/${id}`, payload);
+export const deleteWorkout      = id => api.delete(`/workouts/${id}`);
+
+export const addWorkoutExercise    = payload => api.post('/workoutexercises', payload);
+export const updateWorkoutExercise = (id, payload) => api.put(`/workoutexercises/${id}`, payload);
+export const deleteWorkoutExercise = id => api.delete(`/workoutexercises/${id}`);
+export const reorderWorkoutItems   = list => api.put('/workoutexercises/reorder', list);

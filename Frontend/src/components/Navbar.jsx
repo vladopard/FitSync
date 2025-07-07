@@ -24,10 +24,12 @@ export default function Navbar() {
               Home
             </NavLink>
           </li>
-          {/* future links:
-            <li><NavLink to="/plans">Plans</NavLink></li>
-            <li><NavLink to="/workouts">Workouts</NavLink></li>
-          */}
+          <li>
+            <NavLink to="/plans">Plans</NavLink>
+          </li>
+          <li>
+            <NavLink to="/workouts">Workouts</NavLink>
+          </li>
 
           {/* push the user area to the right */}
           {user ? (

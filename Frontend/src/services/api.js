@@ -33,13 +33,21 @@ export const updatePlanItemOrders = (items) =>
     api.put('/exerciseplanitems/reorder', items);
 export const deletePlanItem = itemId => api.delete(`/exerciseplanitems/${itemId}`);
 
-export const getWorkouts        = () => api.get('/workouts');
-export const createWorkout      = payload => api.post('/workouts', payload);   // { date, exercisePlanId? }
-export const getWorkout         = id => api.get(`/workouts/${id}`);
-export const updateWorkout      = (id, payload) => api.put(`/workouts/${id}`, payload);
-export const deleteWorkout      = id => api.delete(`/workouts/${id}`);
+// ----- Workouts -----
+export const getWorkoutsByUser = (userId) =>
+  api.get(`/workouts/user/${userId}`);
 
-export const addWorkoutExercise    = payload => api.post('/workoutexercises', payload);
-export const updateWorkoutExercise = (id, payload) => api.put(`/workoutexercises/${id}`, payload);
-export const deleteWorkoutExercise = id => api.delete(`/workoutexercises/${id}`);
-export const reorderWorkoutItems   = list => api.put('/workoutexercises/reorder', list);
+export const getWorkout    = (id) => api.get(`/workouts/${id}`);
+export const createWorkout = (userId, payload) =>
+  api.post(`/workouts/user/${userId}`, payload);
+export const updateWorkout = (id, payload) =>
+  api.put(`/workouts/${id}`, payload);
+export const deleteWorkout = (id) => api.delete(`/workouts/${id}`);
+
+// ----- Workout Exercises -----
+export const addWorkoutExercise = (workoutId, payload) =>
+  api.post(`/workouts/${workoutId}/exercises`, payload);
+export const updateWorkoutExercise = (workoutId, id, payload) =>
+  api.put(`/workouts/${workoutId}/exercises/${id}`, payload);
+export const deleteWorkoutExercise = (workoutId, id) =>
+  api.delete(`/workouts/${workoutId}/exercises/${id}`);

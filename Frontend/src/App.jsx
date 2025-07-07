@@ -7,6 +7,7 @@ import Register           from './pages/Register';
 import ExercisePlansPage  from './pages/ExercisePlansPage';
 import CreatePlanPage     from './pages/CreatePlanPage';   // <‑‑ ново
 import AddPlanItemsPage from './pages/AddPlanItemsPage';
+import WorkoutsPage      from './pages/WorkoutsPage';
 
 export default function App() {
   return (
@@ -24,6 +25,9 @@ export default function App() {
           <Route path="plans" element={<ExercisePlansPage />} />
           <Route path="plans/new" element={<CreatePlanPage />} />
           <Route path='plans/:planId/items' element={<AddPlanItemsPage />} />
+
+          {/* Workouts */}
+          <Route path="workouts" element={<WorkoutsPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

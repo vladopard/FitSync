@@ -1,7 +1,7 @@
 // src/pages/ExercisePlansPage.jsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAllPlans } from '../services/api';
+import { getAllPlans, deletePlan } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import '../styles/pages/exercisePlans.css';
 
@@ -30,6 +30,16 @@ export default function ExercisePlansPage() {
     })();
   }, []);
 
+  const handleDelete = async (planId) => {
+    if (!window.confirm('Заиста обрисати овај план?')) return;
+    try {
+      await deletePlan(planId);
+      setPlans(plans.filter(p => p.id !== planId));
+    } catch {
+      alert('Грешка при брисању плана.');
+    }
+  };
+
   if (loading) return <p>Loading…</p>;
   if (error)   return <p className="error">{error}</p>;
 
@@ -47,14 +57,21 @@ export default function ExercisePlansPage() {
         <div className="plan-body">
           {plan.description && <p className="plan-desc">{plan.description}</p>}
 
-          {/* My Plans: dugme za Add Items */}
           {isMine && (
-            <button
-              className="btn-add-items"
-              onClick={() => navigate(`/plans/${plan.id}/items`)}
-            >
-              + Add Exercises
-            </button>
+            <div className="plan-actions">
+              <button
+                className="btn-add-items"
+                onClick={() => navigate(`/plans/${plan.id}/items`)}
+              >
+                + Add Exercises
+              </button>
+              <button
+                className="btn-delete-plan"
+                onClick={() => handleDelete(plan.id)}
+              >
+                Delete Plan
+              </button>
+            </div>
           )}
 
           <table>

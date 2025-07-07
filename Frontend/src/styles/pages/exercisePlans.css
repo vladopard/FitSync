@@ -89,3 +89,26 @@ th, td { padding: 0.4rem; border-bottom: 1px solid #eee; font-size: 0.9rem; }
 .btn-add-items:hover {
   background: #218838;
 }
+
+.plan-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  align-items: center;         /* центрира оба дугмета по висини */
+}
+
+.btn-delete-plan {
+  display: inline-block;
+  margin-bottom: 0.75rem;      /* као и .btn-add-items */
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 0.4rem 0.8rem;      /* исти padding као .btn-add-items */
+  border-radius: 6px;          /* иста заобљеност ивице */
+  font-size: 0.9rem;           /* истa величина font‐а */
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-delete-plan:hover {
+  background-color: #c0392b;   /* мали darken уместо opacity */
+}

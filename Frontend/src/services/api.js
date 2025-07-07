@@ -27,3 +27,4 @@ const api = axios.create({
 export default api;
 
 export const getAllPlans = () => api.get('/exerciseplans');
+export const deletePlan   = (planId) => axios.delete(`/api/exerciseplans/${planId}`);

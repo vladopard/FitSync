@@ -96,3 +96,14 @@
 .form-actions button:hover {
   opacity: 0.9;
 }
+
+/* Drag and drop */
+.drag-handle {
+  cursor: grab;
+  user-select: none;
+}
+
+.items-table tr.dragging {
+  background: #f0f0f0;
+  opacity: 0.7;
+}

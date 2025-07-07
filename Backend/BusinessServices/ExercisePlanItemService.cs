@@ -51,6 +51,18 @@ namespace FitSync.BusinessServices
             await _repo.SaveChangesAsync();
         }
 
+        public async Task ReorderAsync(IEnumerable<ExercisePlanItemOrderDTO> items)
+        {
+            var list = items.ToList();
+            foreach (var dto in list)
+            {
+                var entity = await GetPlanItemOrThrowAsync(dto.Id);
+                entity.Order = dto.Order;
+            }
+
+            await _repo.SaveChangesAsync();
+        }
+
         private async Task<ExercisePlanItem> GetPlanItemOrThrowAsync(int id)
             => await _repo.GetPlanItemAsync(id)
                ?? throw new KeyNotFoundException($"ExercisePlanItem with id {id} not found.");

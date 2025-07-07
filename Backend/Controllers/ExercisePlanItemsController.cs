@@ -54,5 +54,13 @@ namespace FitSync.Controllers
             await _service.DeleteAsync(id);
             return NoContent();
         }
+
+        // PUT: api/exerciseplanitems/reorder
+        [HttpPut("reorder")]
+        public async Task<IActionResult> Reorder([FromBody] IEnumerable<ExercisePlanItemOrderDTO> items)
+        {
+            await _service.ReorderAsync(items);
+            return NoContent();
+        }
     }
 }

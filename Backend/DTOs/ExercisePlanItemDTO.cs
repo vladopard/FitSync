@@ -35,4 +35,11 @@
         public string ExerciseName { get; set; } = null!;
         public string PlanName { get; set; } = null!;
     }
+
+    // 6) DTO за промену редоследа
+    public class ExercisePlanItemOrderDTO
+    {
+        public int Id { get; set; }
+        public int Order { get; set; }
+    }
 }

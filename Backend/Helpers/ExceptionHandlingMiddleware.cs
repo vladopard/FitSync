@@ -20,16 +20,34 @@ namespace FitSync.Helpers
             {
                 await _next(http);
             }
-            catch (DbUpdateException dbEx) when (dbEx.InnerException?.Message.Contains("duplicate") == true)
+            catch (DbUpdateException dbEx)
+                when (dbEx.InnerException?.Message.Contains("duplicate key value") == true)
             {
+                var message = dbEx.InnerException?.Message ?? "";
+
+                // Check your PostgreSQL constraint names
+                var detail = message.Contains("IX_ExercisePlanItems_ExercisePlanId_ExerciseId")
+                    ? "ExerciseAlreadyExists"
+                    : message.Contains("IX_ExercisePlanItems_ExercisePlanId_Order")
+                        ? "OrderAlreadyExists"
+                        : "DuplicatePlanName";
+
+                var title = detail switch
+                {
+                    "ExerciseAlreadyExists" => "This exercise is already part of the plan.",
+                    "OrderAlreadyExists" => "This order number is already used in the plan.",
+                    _ => "Conflict"
+                };
+
                 var problem = new ProblemDetails
                 {
                     Type = "https://httpstatuses.com/409",
-                    Title = "Conflict",
+                    Title = title,
                     Status = StatusCodes.Status409Conflict,
-                    Detail = "Duplicate plan name for this user. Please choose a different name.",
+                    Detail = detail,
                     Instance = http.Request.Path
                 };
+
                 await WriteProblemAsync(http, problem);
             }
             catch (KeyNotFoundException knf)

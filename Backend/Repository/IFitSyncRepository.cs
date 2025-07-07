@@ -1,4 +1,5 @@
-﻿using FitSync.Entities;
+﻿using FitSync.DTOs;
+using FitSync.Entities;
 
 public interface IFitSyncRepository
 {
@@ -20,6 +21,7 @@ public interface IFitSyncRepository
     Task<IEnumerable<ExercisePlanItem>> GetItemsForPlanAsync(int planId);
     Task<ExercisePlanItem?> GetPlanItemAsync(int id);
     Task AddPlanItemAsync(ExercisePlanItem item);
+    Task ReorderPlanItemsAsync(IEnumerable<ExercisePlanItemOrderDTO> items);
     void UpdatePlanItem(ExercisePlanItem item);
     void DeletePlanItem(ExercisePlanItem item);
     // PERSONAL RECORD

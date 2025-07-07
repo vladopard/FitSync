@@ -1,4 +1,5 @@
 ﻿using FitSync.DbContext;
+using FitSync.DTOs;
 using FitSync.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -77,6 +78,38 @@ public class FitSyncRepository : IFitSyncRepository
                      .Include(i => i.Exercise)
                      .Include(i => i.Plan)
                      .FirstOrDefaultAsync(i => i.Id == id);
+
+    public async Task ReorderPlanItemsAsync(IEnumerable<ExercisePlanItemOrderDTO> items)
+    {
+        var list = items.ToList();
+        var ids = list.Select(x => x.Id);
+
+        var cases = string.Join("\n", list.Select(i =>
+            $"WHEN {i.Id} THEN {i.Order}"
+        ));
+
+        var sql = $@"
+      UPDATE ""ExercisePlanItems""
+      SET ""Order"" = CASE ""Id""
+        {cases}
+      END
+      WHERE ""Id"" IN ({string.Join(",", ids)});
+    ";
+
+        // Почни транзакцију
+        await using var tx = await _ctx.Database.BeginTransactionAsync();
+        // Одложи све дефејрабл констреинте (укупно или по имену)
+        await _ctx.Database.ExecuteSqlRawAsync(
+            @"SET CONSTRAINTS ALL DEFERRED;"
+        );
+
+        // Сада уради атомарни UPDATE
+        await _ctx.Database.ExecuteSqlRawAsync(sql);
+
+        // Комитуј
+        await tx.CommitAsync();
+    }
+
 
     public async Task AddPlanItemAsync(ExercisePlanItem item)
     {

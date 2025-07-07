@@ -11,13 +11,10 @@
         public string? Note { get; set; }
     }
 
-    // 2) DTO за креирање нове ставке
     public class ExercisePlanItemCreateDTO : ExercisePlanItemBaseDTO { }
 
-    // 3) DTO за потпуно ажурирање (PUT)
     public class ExercisePlanItemUpdateDTO : ExercisePlanItemBaseDTO { }
 
-    // 4) DTO за делимично ажурирање (PATCH)
     public class ExercisePlanItemPatchDTO
     {
         public int? ExercisePlanId { get; set; }
@@ -28,11 +25,17 @@
         public string? Note { get; set; }
     }
 
-    // 5) DTO за приказ (Read)
     public class ExercisePlanItemDTO : ExercisePlanItemBaseDTO
     {
         public int Id { get; set; }
         public string ExerciseName { get; set; } = null!;
         public string PlanName { get; set; } = null!;
+
+    }
+
+    public class ExercisePlanItemOrderDTO
+    {
+        public int Id { get; set; }
+        public int Order { get; set; }
     }
 }

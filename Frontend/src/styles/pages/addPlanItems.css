@@ -96,3 +96,50 @@
 .form-actions button:hover {
   opacity: 0.9;
 }
+
+.plan-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.plan-item {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  background: #fff;
+}
+
+.plan-item.dragging {
+  background: #f0f0f0;
+  opacity: 0.8;
+}
+
+.drag-handle {
+  cursor: grab;
+  margin-right: 0.5rem;
+  user-select: none;
+}
+
+.item-order {
+  width: 2rem;
+}
+
+.item-name {
+  flex: 1;
+}
+
+.item-sets,
+.item-reps {
+  width: 3rem;
+  text-align: center;
+}
+
+.item-note {
+  flex: 2;
+  color: #555;
+}
+

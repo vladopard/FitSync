@@ -1,6 +1,7 @@
 ﻿using FitSync.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata.Internal;
 
 namespace FitSync.FluentAPI;
 
@@ -42,9 +43,6 @@ public class ExercisePlanItemConfiguration : IEntityTypeConfiguration<ExercisePl
         builder.HasIndex(i => new { i.ExercisePlanId, i.ExerciseId })
                .IsUnique();
 
-        builder.HasIndex(i => new { i.ExercisePlanId, i.Order })
-               .IsUnique()
-               .HasDatabaseName("IX_ExercisePlanItems_Plan_Order_Unique");
-
+        
     }
 }

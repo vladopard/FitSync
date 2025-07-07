@@ -1,24 +1,29 @@
 // src/pages/AddPlanItemsPage.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import api from '../services/api';
+import {
+  DragDropContext,
+  Droppable,
+  Draggable
+} from 'react-beautiful-dnd';
+import api, { updatePlanItemOrders } from '../services/api';
 import '../styles/pages/addPlanItems.css';
 
 export default function AddPlanItemsPage() {
   const { planId } = useParams();
 
-  const [planName,    setPlanName]    = useState('');
-  const [planItems,   setPlanItems]   = useState([]);
-  const [exercises,   setExercises]   = useState([]);
+  const [planName, setPlanName] = useState('');
+  const [planItems, setPlanItems] = useState([]);
+  const [exercises, setExercises] = useState([]);
   const [loadingPlan, setLoadingPlan] = useState(true);
-  const [loadingEx,   setLoadingEx]   = useState(true);
-  const [error,       setError]       = useState(null);
+  const [loadingEx, setLoadingEx] = useState(true);
+  const [error, setError] = useState(null);
   const [showFormFor, setShowFormFor] = useState(null);
-  const [formData,    setFormData]    = useState({
+  const [formData, setFormData] = useState({
     order: 1,
-    sets:  3,
-    reps:  8,
-    note:  ''
+    sets: 3,
+    reps: 8,
+    note: ''
   });
 
   // 1) Load plan details (name + existing items)
@@ -61,46 +66,65 @@ export default function AddPlanItemsPage() {
     setFormData(fd => ({ ...fd, [name]: value }));
   };
 
-  const handleSubmit = async e => {
-  e.preventDefault();
-  try {
-    await api.post('/exerciseplanitems', {
-      exercisePlanId: Number(planId),
-      exerciseId:     showFormFor,
-      order:          Number(formData.order),
-      sets:           Number(formData.sets),
-      reps:           Number(formData.reps),
-      note:           formData.note
-    });
-    const { data } = await api.get(`/exerciseplans/${planId}`);
-    setPlanItems(data.items);
-    setShowFormFor(null);
-  } catch (err) {
-    if (err.response?.status === 409) {
-      const detail = err.response.data?.detail;
-      switch (detail) {
-        case 'ExerciseAlreadyExists':
-          setError('That exercise is already in the plan.');
-          break;
-        case 'OrderAlreadyExists':
-          setError('That order number is already present in the plan.');
-          break;
-        case 'DuplicatePlanName':
-        default:
-          // Middleware is (mis)using this code for order conflicts, so treat it as order error:
-          setError('That order number is already used in the plan.');
-          break;
-      }
-      setShowFormFor(null);
-    } else {
-      setError('Failed to add item');
+  const handleDragEnd = async result => {
+    if (!result.destination) return;
+
+    const items = Array.from(planItems);
+    const [moved] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, moved);
+
+    const reordered = items.map((it, idx) => ({ ...it, order: idx + 1 }));
+
+    setPlanItems(reordered);
+
+    try {
+      await updatePlanItemOrders(reordered.map(({ id, order }) => ({ id, order })));
+    } catch {
+      setError('Failed to update item order');
     }
-  }
-};
+  };
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    try {
+      await api.post('/exerciseplanitems', {
+        exercisePlanId: Number(planId),
+        exerciseId: showFormFor,
+        order: Number(formData.order),
+        sets: Number(formData.sets),
+        reps: Number(formData.reps),
+        note: formData.note
+      });
+      const { data } = await api.get(`/exerciseplans/${planId}`);
+      setPlanItems(data.items);
+      setShowFormFor(null);
+    } catch (err) {
+      if (err.response?.status === 409) {
+        const detail = err.response.data?.detail;
+        switch (detail) {
+          case 'ExerciseAlreadyExists':
+            setError('That exercise is already in the plan.');
+            break;
+          case 'OrderAlreadyExists':
+            setError('That order number is already present in the plan.');
+            break;
+          case 'DuplicatePlanName':
+          default:
+            // Middleware is (mis)using this code for order conflicts, so treat it as order error:
+            setError('That order number is already used in the plan.');
+            break;
+        }
+        setShowFormFor(null);
+      } else {
+        setError('Failed to add item');
+      }
+    }
+  };
 
   if (loadingPlan || loadingEx) return <p>Loading…</p>;
 
   return (
+    
     <section className="add-items-page">
       <header>
         <h1>Add Exercises to “{planName}”</h1>
@@ -114,24 +138,45 @@ export default function AddPlanItemsPage() {
       <section className="current-items">
         <h2>Current Plan Items</h2>
         {planItems.length ? (
-          <table className="items-table">
-            <thead>
-              <tr>
-                <th>#</th><th>Exercise</th><th>Sets</th><th>Reps</th><th>Note</th>
-              </tr>
-            </thead>
-            <tbody>
-              {planItems.map(i => (
-                <tr key={i.id}>
-                  <td>{i.order}</td>
-                  <td>{i.exerciseName}</td>
-                  <td>{i.sets}</td>
-                  <td>{i.reps}</td>
-                  <td>{i.note}</td>
+          <DragDropContext onDragEnd={handleDragEnd}>
+            {console.log('planItems IDs:', planItems.map(i => i.id))}
+            <table className="items-table">
+              <thead>
+                <tr>
+                  <th>#</th><th>Exercise</th><th>Sets</th><th>Reps</th><th>Note</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <Droppable droppableId="planItems" isDropDisabled={false} isCombineEnabled={false}
+                ignoreContainerClipping={false}>
+                {(provided) => (
+                  <tbody ref={provided.innerRef} {...provided.droppableProps}>
+                    {planItems.map((i, index) => (
+                      <Draggable key={i.id} draggableId={String(i.id)} index={index}>
+                        {(prov, snapshot) => (
+                          <tr
+                            ref={prov.innerRef}
+                            {...prov.draggableProps}           
+                            style={prov.draggableProps.style}   
+                            className={snapshot.isDragging ? 'dragging' : ''}
+                          >
+                            <td className="handle-cell" {...prov.dragHandleProps}>
+                              <span className="drag-handle">☰</span> {i.order}
+                            </td>
+                            <td>{i.exerciseName}</td>
+                            <td>{i.sets}</td>
+                            <td>{i.reps}</td>
+                            <td>{i.note}</td>
+                          </tr>
+                        )}
+                      </Draggable>
+
+                    ))}
+                    {provided.placeholder}
+                  </tbody>
+                )}
+              </Droppable>
+            </table>
+          </DragDropContext>
         ) : (
           <p>No items yet. Click + below to add.</p>
         )}

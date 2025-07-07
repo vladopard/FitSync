@@ -44,6 +44,11 @@ namespace FitSync.BusinessServices
             await _repo.SaveChangesAsync();
         }
 
+        public async Task ReorderAsync(IEnumerable<ExercisePlanItemOrderDTO> items)
+        {
+            await _repo.ReorderPlanItemsAsync(items);
+        }
+
         public async Task DeleteAsync(int id)
         {
             var entity = await GetPlanItemOrThrowAsync(id);

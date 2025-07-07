@@ -74,7 +74,7 @@ public class AuthenticationService : IAuthenticationService
     {
         var roles = await _users.GetRolesAsync(user);
         var (token, exp) = GenerateJwt(user, roles);
-        return new(true, token, exp, roles, null);
+        return new(true, token, user.UserName, user.Id, exp, roles, null);
     }
 
     private (string Token, DateTimeOffset Expires) GenerateJwt(User u, IEnumerable<string> roles)
@@ -101,7 +101,7 @@ public class AuthenticationService : IAuthenticationService
     }
 
     private AuthResultDTO Fail(IEnumerable<string> errs)
-        => new(false, null, null, null, errs);
+        => new(false, null, null, null, null, null, errs);
 
     private AuthResultDTO Fail(string err) => Fail(new[] { err });
 

@@ -47,7 +47,7 @@ namespace FitSync.BusinessServices
             _mapper.Map(dto, entity);
             await _repo.SaveChangesAsync();
         }
-
+       
         public async Task PatchAsync(int id, ExercisePlanPatchDTO dto)
         {
             var entity = await GetPlanOrThrowAsync(id);

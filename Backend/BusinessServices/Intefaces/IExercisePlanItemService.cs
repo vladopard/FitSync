@@ -9,5 +9,6 @@ namespace FitSync.BusinessServices.Intefaces
         Task<IEnumerable<ExercisePlanItemDTO>> GetAllByPlanAsync(int planId);
         Task<ExercisePlanItemDTO> GetByIdAsync(int id);
         Task UpdateAsync(int id, ExercisePlanItemUpdateDTO dto);
+        Task ReorderAsync(IEnumerable<ExercisePlanItemOrderDTO> items);
     }
 }

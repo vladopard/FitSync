@@ -1,6 +1,7 @@
 ﻿using FitSync.DbContext;
 using FitSync.DTOs;
 using FitSync.Entities;
+using FitSync.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 public class FitSyncRepository : IFitSyncRepository
@@ -16,6 +17,25 @@ public class FitSyncRepository : IFitSyncRepository
     public async Task<IEnumerable<Exercise>> GetAllExercisesAsync()
         => await _ctx.Exercises.AsNoTracking().ToListAsync();
 
+    public async Task<PagedList<Exercise>> GetExercisesPagedAsync(ExerciseQueryParameters parameters)
+    {
+        var query = _ctx.Exercises.AsNoTracking().AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
+        {
+            var term = parameters.SearchTerm.Trim().ToLower();
+            query = query.Where(e => e.Name.ToLower().Contains(term));
+        }
+
+        query = parameters.SortBy?.ToLower() switch
+        {
+            "name" => query.OrderBy(e => e.Name),
+            "musclegroup" => query.OrderBy(e => e.MuscleGroup),
+            _ => query.OrderBy(e => e.Id)
+        };
+
+        return await PagedList<Exercise>.CreateAsync(query, parameters.PageNumber, parameters.PageSize);
+    }
     public async Task<Exercise?> GetExerciseByIdAsync(int id)
         => await _ctx.Exercises.FindAsync(id);
 

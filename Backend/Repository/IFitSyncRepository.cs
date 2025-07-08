@@ -1,10 +1,12 @@
 ﻿using FitSync.DTOs;
 using FitSync.Entities;
+using FitSync.Helpers;
 
 public interface IFitSyncRepository
 {
     //EXERCISE
     Task<IEnumerable<Exercise>> GetAllExercisesAsync();
+    Task<PagedList<Exercise>> GetExercisesPagedAsync(ExerciseQueryParameters parameters);
     Task<Exercise?> GetExerciseByIdAsync(int id);
     Task AddExerciseAsync(Exercise exercise);
     void DeleteExercise(Exercise exercise);

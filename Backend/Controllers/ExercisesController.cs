@@ -1,6 +1,8 @@
-﻿using FitSync.BusinessServices;
+﻿using System.Text.Json;
+using FitSync.BusinessServices;
 using FitSync.BusinessServices.Intefaces;
 using FitSync.DTOs;
+using FitSync.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitSync.Controllers
@@ -22,6 +24,16 @@ namespace FitSync.Controllers
         {
             var list = await _service.GetAllAsync();
             return Ok(list);
+        }
+
+        // GET: api/exercises/paged
+        [HttpGet("paged")]
+        public async Task<ActionResult<PagedList<ExerciseDTO>>> GetPaged([FromQuery] ExerciseQueryParameters p)
+        {
+            var page = await _service.GetAllAsync(p);
+            var camel = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(page.MetaData, camel));
+            return Ok(page);
         }
 
         // GET: api/exercises/5

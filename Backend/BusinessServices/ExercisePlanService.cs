@@ -56,6 +56,7 @@ namespace FitSync.BusinessServices
                 .OrderBy(i => i.Order)
                 .Select(i => new ExercisePlanItem
                 {
+                    Plan = newPlan,
                     ExerciseId = i.ExerciseId,
                     Order = i.Order,
                     Sets = i.Sets,
@@ -66,7 +67,6 @@ namespace FitSync.BusinessServices
 
             await _repo.AddPlanWithItemsAsync(newPlan, items);
 
-            // ако ти треба „свеже“ учитане навигације
             var full = await _repo.GetPlanAsync(newPlan.Id) ?? newPlan;
             return _mapper.Map<ExercisePlanDTO>(full);
         }

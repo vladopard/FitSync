@@ -2,6 +2,7 @@
 using FitSync.BusinessServices.Intefaces;
 using FitSync.DTOs;
 using FitSync.Entities;
+using FitSync.Helpers;
 
 namespace FitSync.BusinessServices
 {
@@ -22,6 +23,17 @@ namespace FitSync.BusinessServices
         {
             var entities = await _repo.GetAllExercisesAsync();
             return _mapper.Map<IEnumerable<ExerciseDTO>>(entities);
+        }
+
+        public async Task<PagedList<ExerciseDTO>> GetAllAsync(ExerciseQueryParameters parameters)
+        {
+            var page = await _repo.GetExercisesPagedAsync(parameters);
+            var dtoItems = _mapper.Map<List<ExerciseDTO>>(page);
+            return new PagedList<ExerciseDTO>(
+                dtoItems,
+                page.MetaData.TotalCount,
+                page.MetaData.CurrentPage,
+                page.MetaData.PageSize);
         }
 
         public async Task<ExerciseDTO> GetByIdAsync(int id)

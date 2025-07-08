@@ -73,7 +73,7 @@ export default function ExercisePlansPage() {
                 className="btn-add-items"
                 onClick={() => navigate(`/plans/${plan.id}/items`)}
               >
-                + Add Exercises
+                Update Plan
               </button>
               <button
                 className="btn-delete-plan"

@@ -1,4 +1,3 @@
-// src/pages/AddPlanItemsPage.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
@@ -6,19 +5,22 @@ import {
   Droppable,
   Draggable
 } from 'react-beautiful-dnd';
-import api, { updatePlanItemOrders, deletePlanItem } from '../services/api';
+import api, { updatePlanItemOrders, deletePlanItem, updatePlan } from '../services/api';
 import '../styles/pages/addPlanItems.css';
 
 export default function AddPlanItemsPage() {
   const { planId } = useParams();
 
   const [planName, setPlanName] = useState('');
+  const [planDescription, setPlanDescription] = useState('');
   const [planItems, setPlanItems] = useState([]);
   const [exercises, setExercises] = useState([]);
   const [loadingPlan, setLoadingPlan] = useState(true);
   const [loadingEx, setLoadingEx] = useState(true);
   const [error, setError] = useState(null);
   const [showFormFor, setShowFormFor] = useState(null);
+  const [editingName, setEditingName] = useState(false);
+  const [newPlanName, setNewPlanName] = useState('');
   const [formData, setFormData] = useState({
     order: 1,
     sets: 3,
@@ -32,6 +34,7 @@ export default function AddPlanItemsPage() {
       try {
         const { data } = await api.get(`/exerciseplans/${planId}`);
         setPlanName(data.name);
+        setPlanDescription(data.description || '');
         setPlanItems(data.items);
       } catch {
         setError('Failed to load plan details');
@@ -61,6 +64,12 @@ export default function AddPlanItemsPage() {
     setFormData({ order: planItems.length + 1, sets: 3, reps: 8, note: '' });
   };
 
+  const openRename = () => {
+    setError(null);
+    setNewPlanName(planName);
+    setEditingName(true);
+  };
+
   const handleChange = e => {
     const { name, value } = e.target;
     setFormData(fd => ({ ...fd, [name]: value }));
@@ -87,6 +96,17 @@ export default function AddPlanItemsPage() {
       setPlanItems(ps => ps.filter(i => i.id !== itemId));
     } catch {
       setError('Failed to delete item');
+    }
+  };
+
+  const handleRenameSubmit = async e => {
+    e.preventDefault();
+    try {
+      await updatePlan(planId, { name: newPlanName, description: planDescription });
+      setPlanName(newPlanName);
+      setEditingName(false);
+    } catch {
+      setError('Failed to update plan name');
     }
   };
 
@@ -124,6 +144,10 @@ export default function AddPlanItemsPage() {
       <header>
         <h1>“{planName}”</h1>
         <Link to="/plans" className="btn-back">← Back to Plans</Link>
+        <div className="header-actions">
+          <button className="btn-rename" onClick={openRename}>Rename</button>
+          <Link to="/plans" className="btn-back">← Back to Plans</Link>
+        </div>
       </header>
 
       {error && <p className="error">{error}</p>}
@@ -143,39 +167,31 @@ export default function AddPlanItemsPage() {
                   <th></th>
                 </tr>
               </thead>
-              <Droppable
-                droppableId="planItems"
-                isDropDisabled={false}
-                isCombineEnabled={false}
-                ignoreContainerClipping={false}
-              >
-                {provided => (
+              <Droppable droppableId="planItems">
+                {(provided) => (
                   <tbody
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                   >
-                    {planItems.map((i, index) => (
-                      <Draggable key={i.id} draggableId={String(i.id)} index={index}>
-                        {(prov, snapshot) => (
+                    {planItems.map((item, idx) => (
+                      <Draggable key={item.id} draggableId={`${item.id}`} index={idx}>
+                        {(prov) => (
                           <tr
                             ref={prov.innerRef}
                             {...prov.draggableProps}
-                            style={prov.draggableProps.style}
-                            className={snapshot.isDragging ? 'dragging' : ''}
+                            {...prov.dragHandleProps}
                           >
-                            <td className="handle-cell" {...prov.dragHandleProps}>
-                              <span className="drag-handle">☰</span> {i.order}
-                            </td>
-                            <td>{i.exerciseName}</td>
-                            <td>{i.sets}</td>
-                            <td>{i.reps}</td>
-                            <td>{i.note}</td>
+                            <td>{item.order}</td>
+                            <td>{item.exerciseName}</td>
+                            <td>{item.sets}</td>
+                            <td>{item.reps}</td>
+                            <td>{item.note}</td>
                             <td>
                               <button
-                                className="btn-delete"
-                                onClick={() => handleDeleteItem(i.id)}
+                                className="btn-delete-item"
+                                onClick={() => handleDeleteItem(item.id)}
                               >
-                                Delete
+                                🗑
                               </button>
                             </td>
                           </tr>
@@ -189,44 +205,24 @@ export default function AddPlanItemsPage() {
             </table>
           </DragDropContext>
         ) : (
-          <p>No items yet. Click + below to add.</p>
+          <p>No items in this plan.</p>
         )}
       </section>
 
-      {/* Available exercises */}
-      <section className="available-exercises">
-        <h2>Available Exercises</h2>
-        <table className="ex-table">
-          <thead>
-            <tr>
-              <th>Name</th><th>Muscle</th><th>Type</th><th>Description</th><th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {exercises.map(ex => (
-              <tr key={ex.id}>
-                <td>{ex.name}</td>
-                <td>{ex.muscleGroup}</td>
-                <td>{ex.type}</td>
-                <td>{ex.description}</td>
-                <td>
-                  <button
-                    className="btn-add"
-                    onClick={() => openForm(ex.id)}
-                  >+</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
+      <section className="add-item-form">
+        <h2>Add Exercise</h2>
+        <select
+          value={showFormFor || ''}
+          onChange={e => openForm(Number(e.target.value))}
+        >
+          <option value="">Select an exercise…</option>
+          {exercises.map(ex => (
+            <option key={ex.id} value={ex.id}>{ex.name}</option>
+          ))}
+        </select>
 
-      {showFormFor && (
-        <div className="overlay">
-          <form className="item-form" onSubmit={handleSubmit}>
-            <h2>
-              Configure “{exercises.find(e => e.id === showFormFor)?.name}”
-            </h2>
+        {showFormFor && (
+          <form onSubmit={handleSubmit} className="item-form">
             <label>
               Order
               <input
@@ -274,6 +270,29 @@ export default function AddPlanItemsPage() {
                 Cancel
               </button>
               <button type="submit">Add to Plan</button>
+            </div>
+          </form>
+        )}
+      </section>
+
+      {editingName && (
+        <div className="overlay">
+          <form className="item-form" onSubmit={handleRenameSubmit}>
+            <h2>Rename Plan</h2>
+            <label>
+              Name
+              <input
+                type="text"
+                value={newPlanName}
+                onChange={e => setNewPlanName(e.target.value)}
+                required
+              />
+            </label>
+            <div className="form-actions">
+              <button type="button" onClick={() => setEditingName(false)}>
+                Cancel
+              </button>
+              <button type="submit">Save</button>
             </div>
           </form>
         </div>

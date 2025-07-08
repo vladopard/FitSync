@@ -17,6 +17,26 @@
   color: #2c7be5;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-rename {
+  background: #f0ad4e;
+  color: #fff;
+  border: none;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.btn-rename:hover {
+  background: #ec971f;
+}
+
 .ex-table {
   width: 100%;
   border-collapse: collapse;

@@ -4,6 +4,7 @@ import {
   getWorkoutsByUser,
   createWorkout,
   addWorkoutExercise,
+  deleteWorkout
 } from '../services/api';
 import api from '../services/api';
 import '../styles/pages/workouts.css';
@@ -122,6 +123,15 @@ export default function WorkoutsPage() {
   const handleChangeExercise = (e) =>
     setExerciseForm({ ...exerciseForm, [e.target.name]: e.target.value });
 
+  const handleDeleteWorkout = async (id) => {
+    try {
+      await deleteWorkout(id);
+      setWorkouts((ws) => ws.filter((w) => w.id !== id));
+    } catch {
+      setError('Failed to delete workout');
+    }
+  };
+
   if (loading) return <p>Loading…</p>;
   if (error) return <p className="error">{error}</p>;
 
@@ -139,8 +149,11 @@ export default function WorkoutsPage() {
           <article key={w.id} className="workout-card">
             <header>
               <h3>{new Date(w.date).toLocaleDateString()}</h3>
-              {w.planName && <span className="plan-name">Plan: {w.planName}</span>}
+              {w.planName && (
+                <span className="plan-name">Plan: {w.planName}</span>
+              )}
             </header>
+
             {w.exercises.length > 0 && (
               <table>
                 <thead>
@@ -169,12 +182,21 @@ export default function WorkoutsPage() {
                 </tbody>
               </table>
             )}
-            <button
-              className="btn-add-ex"
-              onClick={() => openAddExercise(w.id)}
-            >
-              + Add Exercise
-            </button>
+
+            <div className="card-actions">
+              <button
+                className="btn-add-ex"
+                onClick={() => openAddExercise(w.id)}
+              >
+                + Add Exercise
+              </button>
+              <button
+                className="btn-delete"
+                onClick={() => handleDeleteWorkout(w.id)}
+              >
+                🗑 Delete
+              </button>
+            </div>
           </article>
         ))
       ) : (

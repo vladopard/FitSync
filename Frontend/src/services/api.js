@@ -30,6 +30,8 @@ export const getAllPlans = () => api.get('/exerciseplans');
 export const getPlansByUser = (userId) =>
   api.get(`/exerciseplans/user/${userId}`);
 export const deletePlan = (planId) => axios.delete(`/api/exerciseplans/${planId}`);
+export const copyPlan = (planId, userId) =>
+  api.post(`/exerciseplans/${planId}/copy/${userId}`);
 
 export const updatePlanItemOrders = (items) =>
   api.put('/exerciseplanitems/reorder', items);

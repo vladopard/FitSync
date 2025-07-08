@@ -1,7 +1,7 @@
 // src/pages/ExercisePlansPage.jsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAllPlans, deletePlan } from '../services/api';
+import { getAllPlans, deletePlan, copyPlan } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import '../styles/pages/exercisePlans.css';
 
@@ -11,10 +11,10 @@ export default function ExercisePlansPage() {
   const { user } = useAuth();
   const currentUserId = user?.userId;
 
-  const [plans,   setPlans]  = useState([]);
-  const [loading, setLoad]   = useState(true);
-  const [error,   setError]  = useState(null);
-  const [openId,  setOpenId] = useState(null);
+  const [plans, setPlans] = useState([]);
+  const [loading, setLoad] = useState(true);
+  const [error, setError] = useState(null);
+  const [openId, setOpenId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,11 +40,21 @@ export default function ExercisePlansPage() {
     }
   };
 
+  const handleCopy = async (planId) => {
+    if (!currentUserId) return;
+    try {
+      const { data } = await copyPlan(planId, currentUserId);
+      setPlans((ps) => [...ps, data]);
+    } catch {
+      alert('Failed to copy plan');
+    }
+  };
+
   if (loading) return <p>Loading…</p>;
-  if (error)   return <p className="error">{error}</p>;
+  if (error) return <p className="error">{error}</p>;
 
   const premadePlans = plans.filter(p => p.userId === PREMADE_USER_ID);
-  const myPlans      = plans.filter(p => p.userId === currentUserId);
+  const myPlans = plans.filter(p => p.userId === currentUserId);
 
   const renderPlan = (plan, isMine = false) => (
     <article key={plan.id} className="plan-card">
@@ -70,6 +80,16 @@ export default function ExercisePlansPage() {
                 onClick={() => handleDelete(plan.id)}
               >
                 Delete Plan
+              </button>
+            </div>
+          )}
+          {!isMine && currentUserId && (
+            <div className="plan-actions">
+              <button
+                className="btn-copy-plan"
+                onClick={() => handleCopy(plan.id)}
+              >
+                Copy Plan
               </button>
             </div>
           )}

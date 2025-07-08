@@ -112,3 +112,17 @@ th, td { padding: 0.4rem; border-bottom: 1px solid #eee; font-size: 0.9rem; }
 .btn-delete-plan:hover {
   background-color: #c0392b;   /* мали darken уместо opacity */
 }
+
+.btn-copy-plan {
+  background: #2c7be5;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s ease-in-out;
+}
+.btn-copy-plan:hover {
+  background: #266bd0;
+}

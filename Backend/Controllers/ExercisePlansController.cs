@@ -45,6 +45,14 @@ namespace FitSync.Controllers
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
+        // POST: api/exerciseplans/{id}/copy/{userId}
+        [HttpPost("{id}/copy/{userId}")]
+        public async Task<ActionResult<ExercisePlanDTO>> Copy(int id, string userId)
+        {
+            var copied = await _service.CopyAsync(id, userId);
+            return CreatedAtAction(nameof(GetById), new { id = copied.Id }, copied);
+        }
+
         // PUT: api/exerciseplans/5
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] ExercisePlanUpdateDTO updateDto)

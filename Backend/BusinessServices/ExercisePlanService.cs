@@ -41,6 +41,37 @@ namespace FitSync.BusinessServices
             return _mapper.Map<ExercisePlanDTO>(entity);
         }
 
+        public async Task<ExercisePlanDTO> CopyAsync(int id, string userId)
+        {
+            var source = await GetPlanOrThrowAsync(id);
+
+            var newPlan = new ExercisePlan
+            {
+                Name = source.Name,
+                Description = source.Description,
+                UserId = userId
+            };
+
+            var items = source.Items
+                .OrderBy(i => i.Order)
+                .Select(i => new ExercisePlanItem
+                {
+                    ExerciseId = i.ExerciseId,
+                    Order = i.Order,
+                    Sets = i.Sets,
+                    Reps = i.Reps,
+                    Note = i.Note
+                })
+                .ToList();
+
+            await _repo.AddPlanWithItemsAsync(newPlan, items);
+
+            // ако ти треба „свеже“ учитане навигације
+            var full = await _repo.GetPlanAsync(newPlan.Id) ?? newPlan;
+            return _mapper.Map<ExercisePlanDTO>(full);
+        }
+
+
         public async Task UpdateAsync(int id, ExercisePlanUpdateDTO dto)
         {
             var entity = await GetPlanOrThrowAsync(id);

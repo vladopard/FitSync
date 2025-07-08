@@ -92,6 +92,13 @@ public class FitSyncRepository : IFitSyncRepository
     public async Task AddPlanAsync(ExercisePlan plan)
         => await _ctx.ExercisePlans.AddAsync(plan);
 
+    public Task AddPlanWithItemsAsync(ExercisePlan plan, IEnumerable<ExercisePlanItem> items)
+    {
+        _ctx.ExercisePlans.Add(plan);
+        _ctx.ExercisePlanItems.AddRange(items);
+        return _ctx.SaveChangesAsync();      
+    }
+
     public void UpdatePlan(ExercisePlan plan)
         => _ctx.ExercisePlans.Update(plan);
 

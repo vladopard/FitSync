@@ -15,6 +15,7 @@ public interface IFitSyncRepository
     Task<IEnumerable<ExercisePlan>> GetPlansByUserAsync(string userId);
     Task<ExercisePlan?> GetPlanAsync(int id);
     Task AddPlanAsync(ExercisePlan plan);
+    Task AddPlanWithItemsAsync(ExercisePlan plan, IEnumerable<ExercisePlanItem> items);
     void UpdatePlan(ExercisePlan plan);
     void DeletePlan(ExercisePlan plan);
     // EXERCISE PLAN ITEM

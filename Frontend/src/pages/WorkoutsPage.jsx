@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import {
   getWorkoutsByUser,
+  getPlansByUser,
   createWorkout,
   addWorkoutExercise,
   updateWorkoutExercise,
@@ -55,7 +56,11 @@ export default function WorkoutsPage() {
     setCreateForm({ exercisePlanId: '' });
     setShowCreate(true);
     try {
-      const { data } = await api.get('/exerciseplans');
+      if (!userId) {
+        setPlans([]);
+        return;
+      }
+      const { data } = await getPlansByUser(userId);
       setPlans(data);
     } catch {
       setPlans([]);

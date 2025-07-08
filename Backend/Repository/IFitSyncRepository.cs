@@ -41,6 +41,7 @@ public interface IFitSyncRepository
     Task<IEnumerable<WorkoutExercise>> GetAllWorkoutExercisesByWorkoutIdAsync(int workoutId);
     Task<WorkoutExercise?> GetWorkoutExerciseByIdAsync(int id);
     Task AddWorkoutExerciseAsync(WorkoutExercise we);
+    Task AddWorkoutExercisesAsync(IEnumerable<WorkoutExercise> list);
     void UpdateWorkoutExercise(WorkoutExercise we);
     void DeleteWorkoutExercise(WorkoutExercise we);
 

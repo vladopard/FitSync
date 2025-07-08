@@ -34,24 +34,60 @@ public class FitSyncRepository : IFitSyncRepository
     // === EXERCISE PLAN ===
 
     public async Task<IEnumerable<ExercisePlan>> GetAllPlansAsync()
-        => await _ctx.ExercisePlans
-                      .Include(p => p.Items)
-                        .ThenInclude(i => i.Exercise)
-                      .AsNoTracking()
-                      .ToListAsync();
+    {
+        var plans = await _ctx.ExercisePlans
+            .Include(p => p.Items)
+                .ThenInclude(i => i.Exercise)
+            .AsNoTracking()
+            .ToListAsync();
+
+        // Сортирај сваки план по редоследу ставки
+        foreach (var plan in plans)
+        {
+            plan.Items = plan.Items
+                .OrderBy(i => i.Order)
+                .ToList();
+        }
+
+        return plans;
+    }
+
     public async Task<IEnumerable<ExercisePlan>> GetPlansByUserAsync(string userId)
-        => await _ctx.ExercisePlans
-                     .Where(p => p.UserId == userId)
-                     .Include(p => p.Items)
-                        .ThenInclude(i => i.Exercise)
-                     .AsNoTracking()
-                     .ToListAsync();
+    {
+        var plans = await _ctx.ExercisePlans
+            .Where(p => p.UserId == userId)
+            .Include(p => p.Items)
+                .ThenInclude(i => i.Exercise)
+            .AsNoTracking()
+            .ToListAsync();
+
+        foreach (var plan in plans)
+        {
+            plan.Items = plan.Items
+                .OrderBy(i => i.Order)
+                .ToList();
+        }
+
+        return plans;
+    }
 
     public async Task<ExercisePlan?> GetPlanAsync(int id)
-        => await _ctx.ExercisePlans
-                     .Include(p => p.Items)
-                        .ThenInclude(i => i.Exercise)
-                     .FirstOrDefaultAsync(p => p.Id == id);
+    {
+        var plan = await _ctx.ExercisePlans
+            .Include(p => p.Items)
+                .ThenInclude(i => i.Exercise)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (plan != null)
+        {
+            plan.Items = plan.Items
+                .OrderBy(i => i.Order)
+                .ToList();
+        }
+
+        return plan;
+    }
+
 
     public async Task AddPlanAsync(ExercisePlan plan)
         => await _ctx.ExercisePlans.AddAsync(plan);
@@ -225,6 +261,17 @@ public class FitSyncRepository : IFitSyncRepository
         await _ctx.Entry(we)
                   .Reference(x => x.Exercise)
                   .LoadAsync();
+    }
+
+    public async Task AddWorkoutExercisesAsync(IEnumerable<WorkoutExercise> list)
+    {
+        await _ctx.WorkoutExercises.AddRangeAsync(list);
+        await _ctx.SaveChangesAsync();
+
+        foreach (var we in list)
+            await _ctx.Entry(we)
+                      .Reference(x => x.Exercise)
+                      .LoadAsync();
     }
 
     public void UpdateWorkoutExercise(WorkoutExercise we)

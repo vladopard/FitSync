@@ -54,3 +54,9 @@ export const deleteWorkoutExercise = (workoutId, id) =>
 
 export const getPersonalRecords = (userId) =>
   api.get(`/personalrecords/user/${userId}`);
+
+export const createPersonalRecord = (userId, payload) =>
+  api.post(`/personalrecords/user/${userId}`, payload);
+
+export const updatePersonalRecord = (id, payload) =>
+  api.put(`/personalrecords/${id}`, payload);

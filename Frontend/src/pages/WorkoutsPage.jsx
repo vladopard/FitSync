@@ -5,7 +5,10 @@ import {
   createWorkout,
   addWorkoutExercise,
   updateWorkoutExercise,
-  deleteWorkout
+  deleteWorkout,
+  getPersonalRecords,
+  createPersonalRecord,
+  updatePersonalRecord
 } from '../services/api';
 import api from '../services/api';
 import '../styles/pages/workouts.css';
@@ -160,6 +163,21 @@ const handleWeightInput = (workoutId, exId, value) => {
         notes: ex.notes,
       };
       await updateWorkoutExercise(workoutId, ex.id, payload);
+      const { data: records } = await getPersonalRecords(userId);
+      const existing = records.find((r) => r.exerciseId === ex.exerciseId);
+      const weight = Number(ex.weight);
+      const recordPayload = {
+        exerciseId: ex.exerciseId,
+        maxWeight: weight,
+        reps: ex.reps,
+        achievedAt: new Date().toISOString(),
+      };
+
+      if (!existing) {
+        await createPersonalRecord(userId, recordPayload);
+      } else if (weight > existing.maxWeight) {
+        await updatePersonalRecord(existing.id, recordPayload);
+      }
     } catch {
       setError('Failed to update weight');
     }

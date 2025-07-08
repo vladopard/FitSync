@@ -28,6 +28,9 @@ export default function Navbar() {
             <NavLink to="/plans">Plans</NavLink>
           </li>
           <li>
+            <NavLink to="/records">Records</NavLink>
+          </li>
+          <li>
             <NavLink to="/workouts">Workouts</NavLink>
           </li>
 

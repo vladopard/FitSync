@@ -1,0 +1,7 @@
+.records-page { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+.records-list { display: grid; gap: 1rem; }
+.record-card  { padding: 1rem 1.25rem; border: 1px solid #ddd; border-radius: .5rem; }
+.record-card header { display:flex; justify-content:space-between; margin-bottom:.5rem; }
+.center       { text-align:center; margin-top:2rem; }
+.record-card header h3 { margin: 0; font-size: 1.25rem; }
+.record-card header p { margin: 0; color: #666; }   

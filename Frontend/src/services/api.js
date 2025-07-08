@@ -2,8 +2,8 @@ import axios from "axios";
 import { getAuthToken, logout } from "./auth-helpers";
 
 const api = axios.create({
-    baseURL: 'https://localhost:7202/api',
-    timeout: 10_000,
+  baseURL: 'https://localhost:7202/api',
+  timeout: 10_000,
 });
 
 // 🔒 Attach JWT to every request
@@ -30,14 +30,14 @@ export const getAllPlans = () => api.get('/exerciseplans');
 export const deletePlan = (planId) => axios.delete(`/api/exerciseplans/${planId}`);
 
 export const updatePlanItemOrders = (items) =>
-    api.put('/exerciseplanitems/reorder', items);
+  api.put('/exerciseplanitems/reorder', items);
 export const deletePlanItem = itemId => api.delete(`/exerciseplanitems/${itemId}`);
 
 // ----- Workouts -----
 export const getWorkoutsByUser = (userId) =>
   api.get(`/workouts/user/${userId}`);
 
-export const getWorkout    = (id) => api.get(`/workouts/${id}`);
+export const getWorkout = (id) => api.get(`/workouts/${id}`);
 export const createWorkout = (userId, payload) =>
   api.post(`/workouts/user/${userId}`, payload);
 export const updateWorkout = (id, payload) =>
@@ -51,3 +51,6 @@ export const updateWorkoutExercise = (workoutId, id, payload) =>
   api.put(`/workouts/${workoutId}/exercises/${id}`, payload);
 export const deleteWorkoutExercise = (workoutId, id) =>
   api.delete(`/workouts/${workoutId}/exercises/${id}`);
+
+export const getPersonalRecords = (userId) =>
+  api.get(`/personalrecords/user/${userId}`);

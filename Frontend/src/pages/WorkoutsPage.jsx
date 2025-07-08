@@ -4,6 +4,7 @@ import {
   getWorkoutsByUser,
   createWorkout,
   addWorkoutExercise,
+  updateWorkoutExercise,
   deleteWorkout
 } from '../services/api';
 import api from '../services/api';
@@ -132,6 +133,38 @@ export default function WorkoutsPage() {
     }
   };
 
+const handleWeightInput = (workoutId, exId, value) => {
+    setWorkouts((ws) =>
+      ws.map((w) =>
+        w.id === workoutId
+          ? {
+              ...w,
+              exercises: w.exercises.map((ex) =>
+                ex.id === exId ? { ...ex, weight: value } : ex
+              ),
+            }
+          : w
+      )
+    );
+  };
+
+  const handleSaveWeight = async (workoutId, ex) => {
+    try {
+      const payload = {
+        exerciseId: ex.exerciseId,
+        sets: ex.sets,
+        reps: ex.reps,
+        weight: Number(ex.weight),
+        restSeconds: ex.restSeconds,
+        orderInWorkout: ex.orderInWorkout,
+        notes: ex.notes,
+      };
+      await updateWorkoutExercise(workoutId, ex.id, payload);
+    } catch {
+      setError('Failed to update weight');
+    }
+  };
+
   if (loading) return <p>Loading…</p>;
   if (error) return <p className="error">{error}</p>;
 
@@ -165,6 +198,7 @@ export default function WorkoutsPage() {
                     <th>Weight</th>
                     <th>Rest</th>
                     <th>Notes</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -174,9 +208,26 @@ export default function WorkoutsPage() {
                       <td>{ex.exerciseName}</td>
                       <td>{ex.sets}</td>
                       <td>{ex.reps}</td>
-                      <td>{ex.weight}</td>
+                      <td>
+                        <input
+                          type="number"
+                          value={ex.weight}
+                          step="0.1"
+                          onChange={(e) =>
+                            handleWeightInput(w.id, ex.id, e.target.value)
+                          }
+                        />
+                      </td>
                       <td>{ex.restSeconds}</td>
                       <td>{ex.notes}</td>
+                      <td>
+                        <button
+                          className="btn-save"
+                          onClick={() => handleSaveWeight(w.id, ex)}
+                        >
+                          Save
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

@@ -127,3 +127,21 @@
 .btn-delete:hover {
   background: #c0392b;
 }
+
+.btn-save {
+  background: #2c7be5;
+  color: #fff;
+  border: none;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.btn-save:hover {
+  background: #1a68d1;
+}
+
+/* Editable weight field */
+.workout-card input[type="number"] {
+  width: 4rem;
+  padding: 0.2rem;
+}

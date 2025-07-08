@@ -175,3 +175,33 @@
 .btn-delete:hover {
   background: #c82333;
 }
+
+.search-section {
+  margin-top: 1rem;
+}
+
+.search-section input {
+  padding: 0.4rem;
+  font-size: 0.95rem;
+  max-width: 300px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.pagination button {
+  padding: 0.3rem 0.6rem;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination button[disabled] {
+  opacity: 0.5;
+  cursor: default;
+}

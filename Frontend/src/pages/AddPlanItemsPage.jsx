@@ -5,7 +5,7 @@ import {
   Droppable,
   Draggable
 } from 'react-beautiful-dnd';
-import api, { updatePlanItemOrders, deletePlanItem, updatePlan } from '../services/api';
+import api, { updatePlanItemOrders, deletePlanItem, updatePlan, getExercisesPaged } from '../services/api';
 import '../styles/pages/addPlanItems.css';
 
 export default function AddPlanItemsPage() {
@@ -15,6 +15,10 @@ export default function AddPlanItemsPage() {
   const [planDescription, setPlanDescription] = useState('');
   const [planItems, setPlanItems] = useState([]);
   const [exercises, setExercises] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchMeta, setSearchMeta] = useState({ totalCount: 0, pageSize: 6, currentPage: 1 });
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchPage, setSearchPage] = useState(1);
   const [loadingPlan, setLoadingPlan] = useState(true);
   const [loadingEx, setLoadingEx] = useState(true);
   const [error, setError] = useState(null);
@@ -58,6 +62,25 @@ export default function AddPlanItemsPage() {
     })();
   }, []);
 
+  // 3) Search exercises with pagination
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await getExercisesPaged({
+          pageNumber: searchPage,
+          searchTerm: searchTerm || undefined
+        });
+        const meta = res.headers['x-pagination']
+          ? JSON.parse(res.headers['x-pagination'])
+          : { totalCount: res.data.length, pageSize: 6, currentPage: searchPage };
+        setSearchResults(res.data);
+        setSearchMeta(meta);
+      } catch {
+        setError('Failed to load exercises');
+      }
+    })();
+  }, [searchPage, searchTerm]);
+
   const openForm = exerciseId => {
     setError(null);
     setShowFormFor(exerciseId);
@@ -74,6 +97,16 @@ export default function AddPlanItemsPage() {
     const { name, value } = e.target;
     setFormData(fd => ({ ...fd, [name]: value }));
   };
+
+  const handleSearchChange = e => {
+    setSearchTerm(e.target.value);
+    setSearchPage(1);
+  };
+
+  const totalPages = Math.ceil(searchMeta.totalCount / searchMeta.pageSize) || 1;
+
+  const prevPage = () => setSearchPage(p => Math.max(p - 1, 1));
+  const nextPage = () => setSearchPage(p => Math.min(p + 1, totalPages));
 
   const handleDragEnd = async result => {
     if (!result.destination) return;
@@ -143,7 +176,6 @@ export default function AddPlanItemsPage() {
     <section className="add-items-page">
       <header>
         <h1>“{planName}”</h1>
-        <Link to="/plans" className="btn-back">← Back to Plans</Link>
         <div className="header-actions">
           <button className="btn-rename" onClick={openRename}>Rename</button>
           <Link to="/plans" className="btn-back">← Back to Plans</Link>
@@ -220,6 +252,42 @@ export default function AddPlanItemsPage() {
             <option key={ex.id} value={ex.id}>{ex.name}</option>
           ))}
         </select>
+
+        <div className="search-section">
+          <input
+            type="text"
+            placeholder="Search exercises…"
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+          <table className="ex-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Muscle</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {searchResults.map(ex => (
+                <tr key={ex.id}>
+                  <td>{ex.name}</td>
+                  <td>{ex.muscleGroup}</td>
+                  <td>
+                    <button className="btn-add" onClick={() => openForm(ex.id)}>
+                      +
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="pagination">
+            <button onClick={prevPage} disabled={searchPage === 1}>Prev</button>
+            <span>Page {searchMeta.currentPage} of {totalPages}</span>
+            <button onClick={nextPage} disabled={searchPage === totalPages}>Next</button>
+          </div>
+        </div>
 
         {showFormFor && (
           <form onSubmit={handleSubmit} className="item-form">

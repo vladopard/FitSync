@@ -26,6 +26,10 @@ const api = axios.create({
 
 export default api;
 
+// ----- Exercises -----
+export const getExercisesPaged = (params) =>
+  api.get('/exercises/paged', { params });
+
 export const getAllPlans = () => api.get('/exerciseplans');
 export const getPlansByUser = (userId) =>
   api.get(`/exerciseplans/user/${userId}`);

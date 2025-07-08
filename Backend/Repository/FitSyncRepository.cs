@@ -132,17 +132,13 @@ public class FitSyncRepository : IFitSyncRepository
       WHERE ""Id"" IN ({string.Join(",", ids)});
     ";
 
-        // Почни транзакцију
         await using var tx = await _ctx.Database.BeginTransactionAsync();
-        // Одложи све дефејрабл констреинте (укупно или по имену)
         await _ctx.Database.ExecuteSqlRawAsync(
             @"SET CONSTRAINTS ALL DEFERRED;"
         );
 
-        // Сада уради атомарни UPDATE
         await _ctx.Database.ExecuteSqlRawAsync(sql);
 
-        // Комитуј
         await tx.CommitAsync();
     }
 
@@ -279,6 +275,13 @@ public class FitSyncRepository : IFitSyncRepository
 
     public void DeleteWorkoutExercise(WorkoutExercise we)
         => _ctx.WorkoutExercises.Remove(we);
+
+    public async Task<double?> GetMaxRecordWeightAsync(string userId, int exerciseId)
+    {
+        return await _ctx.PersonalRecords.Where(r => r.UserId == userId
+                && r.ExerciseId == exerciseId)
+                .MaxAsync(r => (double?)r.MaxWeight);
+    }
 
     //HELPERS
     public async Task<bool> SaveChangesAsync()

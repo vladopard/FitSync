@@ -44,7 +44,7 @@ public interface IFitSyncRepository
     Task AddWorkoutExercisesAsync(IEnumerable<WorkoutExercise> list);
     void UpdateWorkoutExercise(WorkoutExercise we);
     void DeleteWorkoutExercise(WorkoutExercise we);
-
+    Task<double?> GetMaxRecordWeightAsync(string userId, int exerciseId);
 
     //HELPERS
     Task<bool> SaveChangesAsync();

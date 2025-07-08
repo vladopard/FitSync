@@ -48,6 +48,25 @@ namespace FitSync.BusinessServices
             var entity = await GetOrThrowAsync(id);
             _mapper.Map(dto, entity);
             await _repo.SaveChangesAsync();
+
+            var workout = await _repo.GetWorkoutByIdAsync(entity.WorkoutId)
+                ?? throw new KeyNotFoundException($"Workout {entity.WorkoutId} not found.");
+
+            var max = await _repo.GetMaxRecordWeightAsync(workout.UserId, entity.ExerciseId);
+
+            if (!max.HasValue || dto.Weight > max.Value)
+            {
+                var record = new PersonalRecord
+                {
+                    UserId = workout.UserId,
+                    ExerciseId = entity.ExerciseId,
+                    MaxWeight = dto.Weight,
+                    Reps = dto.Reps,
+                    AchievedAt = DateTime.UtcNow
+                };
+
+                await _repo.AddPersonalRecordAsync(record);
+            }
         }
 
         public async Task DeleteAsync(int id)

@@ -71,3 +71,31 @@
 .feature-link:hover {
   color: var(--color-primary-dark);
 }
+
+/* XS */
+@media (max-width: 575.98px) {
+  .title { font-size: 2.25rem; }
+  .subtitle { font-size: 1rem; }
+  .features { gap: 1rem; }
+}
+
+/* SM */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .title { font-size: 2.5rem; }
+  .subtitle { font-size: 1.1rem; }
+}
+
+/* MD */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .title { font-size: 2.75rem; }
+}
+
+/* LG */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .title { font-size: 3rem; }
+}
+
+/* XL */
+@media (min-width: 1200px) and (max-width: 1399.98px) {
+  .title { font-size: 3.25rem; }
+}

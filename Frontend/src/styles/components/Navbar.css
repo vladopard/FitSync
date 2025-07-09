@@ -1,7 +1,7 @@
 .navbar {
-  background:#fff;
-  border-bottom:1px solid #e0e0e0;
-  padding:0.5rem 3.5rem;      /* само колико желиш да не „лепи” уз саму ивицу */
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 0.5rem 3.5rem; 
 }
 
 .navbar-container{
@@ -53,4 +53,63 @@
 
 .link-btn:hover {
   color: #1e90ff;
+}
+
+.navbar-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #555;
+}
+
+/* XS & SM - mobile navigation */
+@media (max-width: 575.98px),
+       (min-width: 576px) and (max-width: 767.98px) {
+  .navbar {
+    padding: 0.5rem 1rem;
+  }
+  .navbar-container {
+    flex-wrap: wrap;
+  }
+  .navbar-toggle {
+    display: block;
+  }
+  .navbar-menu {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    padding: 0.5rem 0;
+  }
+  .navbar-menu.open {
+    display: flex;
+  }
+  .navbar-user {
+    margin-top: 0.5rem;
+  }
+}
+
+/* MD */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .navbar {
+    padding: 0.5rem 2rem;
+  }
+  .navbar-menu {
+    gap: 0.75rem;
+  }
+}
+
+/* LG */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .navbar {
+    padding: 0.5rem 3rem;
+  }
+}
+
+/* XL */
+@media (min-width: 1200px) and (max-width: 1399.98px) {
+  .navbar {
+    padding: 0.5rem 3.5rem;
+  }
 }

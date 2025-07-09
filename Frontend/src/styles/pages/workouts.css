@@ -145,3 +145,48 @@
   width: 4rem;
   padding: 0.2rem;
 }
+
+/* XS */
+@media (max-width: 575.98px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .workout-form {
+    width: 90%;
+  }
+}
+
+/* SM */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .workout-form {
+    width: 80%;
+  }
+}
+
+/* MD */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .workout-form {
+    width: 70%;
+  }
+}
+
+/* LG */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .workout-form {
+    width: 60%;
+  }
+}
+
+/* XL */
+@media (min-width: 1200px) and (max-width: 1399.98px) {
+  .workout-form {
+    width: 55%;
+  }
+}

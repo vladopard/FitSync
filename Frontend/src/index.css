@@ -2,6 +2,7 @@
 @import './styles/variables.css';
 @import './styles/layout.css';
 @import './styles/components/Navbar.css';
+@import './styles/components/WorkoutCalendar.css';
 
 /* page styles */
 @import './styles/home.css';

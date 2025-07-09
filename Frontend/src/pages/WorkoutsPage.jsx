@@ -12,6 +12,7 @@ import {
   updatePersonalRecord
 } from '../services/api';
 import api from '../services/api';
+import WorkoutCalendar from '../components/WorkoutCalendar';
 import '../styles/pages/workouts.css';
 
 export default function WorkoutsPage() {
@@ -193,12 +194,15 @@ const handleWeightInput = (workoutId, exId, value) => {
 
   return (
     <section className="workouts-page">
-      <header className="page-header">
-        <h1>Workouts</h1>
-        <button className="btn-create" onClick={openCreate}>
-          + Create Workout
-        </button>
-      </header>
+      <div className="page-top">
+        <header className="page-header">
+          <h1>Workouts</h1>
+          <button className="btn-create" onClick={openCreate}>
+            + Create Workout
+          </button>
+        </header>
+        <WorkoutCalendar workouts={workouts} />
+      </div>
 
       {workouts.length ? (
         workouts.map((w) => (
